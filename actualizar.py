@@ -218,10 +218,12 @@ def copa_partidos(equipos_a):
     _, grupos, _ = _select(h0, "gruposDropDownList")
     vistos = {}
     for gv, gtxt in grupos:
-        h = _postback(h0, "gruposDropDownList", gv)
-        _, jornadas, _ = _select(h, "jornadasDropDownList")
-        for jv, _ in reversed(jornadas):        # en orden inverso para que cada cambio se registre
-            h = _postback(h, "jornadasDropDownList", jv)
+        hg = _postback(h0, "gruposDropDownList", gv)
+        _, jornadas, selj = _select(hg, "jornadasDropDownList")
+        # La FEB ya muestra la jornada seleccionada al cambiar de fase; volver a pedirla
+        # devuelve la página vacía, así que solo se piden las demás jornadas.
+        paginas = [hg] + [_postback(hg, "jornadasDropDownList", jv) for jv, _ in jornadas if jv != selj]
+        for h in paginas:
             for loc, vis, pid, res, fecha, hora in _FILA_COPA.findall(h):
                 loc = ALIAS.get(htmllib.unescape(loc).strip(), htmllib.unescape(loc).strip())
                 vis = ALIAS.get(htmllib.unescape(vis).strip(), htmllib.unescape(vis).strip())
