@@ -1,0 +1,622 @@
+<!doctype html><html lang="es"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Estadística 2ª FEB BueStats</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Single light theme by choice (printable look). Layout: club header (logo + update) over tabs; toolbar with jornada + PDF; ranked boards on a cool court-grey ground */
+:root{
+  --bg:#f3f3f6; --surface:#ffffff; --fg:#1b1a24; --muted:#6a6878; --line:#dddbe6;
+  --accent:#5b2a86; --accent-soft:#eee6f6; --head:#241b33; --head-fg:#f4f0fa; --head-muted:#b9b2c8; --head-accent:#c9a7ec;
+  --good:#1f7a4d; --bad:#b03a2e;
+  color-scheme:light;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--head)}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{background:var(--head);color:var(--head-fg)}
+header .wrap{padding-block:20px 0;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.crest{flex:none;display:flex;align-items:center;background:#fff;border-radius:10px;padding:8px 14px;max-width:100%;box-sizing:border-box}
+.crest img{display:block;height:44px;width:auto;max-width:100%;object-fit:contain}
+.crest[hidden]{display:none}
+.titles{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:4px}
+.eyebrow{font-family:var(--display);font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:13px;color:var(--head-accent)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4.4vw,42px);line-height:1;margin:0;text-wrap:balance;letter-spacing:.01em}
+.sub{color:var(--head-muted);font-size:14px;margin:0}
+.upd{display:flex;flex-direction:column;align-items:flex-end;gap:6px;max-width:360px}
+.upd p{margin:0;font-size:13px;color:var(--head-muted);text-align:right}
+.upd p.err{color:#ffb4a8}
+.btn{font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:8px 16px;cursor:pointer;border:1px solid transparent;display:inline-flex;align-items:center;gap:8px}
+.btn-light{background:var(--head-accent);color:#1b1027}
+.btn-light:hover{filter:brightness(1.08)}
+.btn-line{background:var(--surface);color:var(--fg);border-color:var(--line)}
+.btn-line:hover{border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.55;cursor:default;filter:none}
+.btn svg{width:16px;height:16px}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{font-family:var(--display);font-size:17px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:transparent;color:var(--head-muted);border:0;border-bottom:3px solid transparent;padding:10px 14px 9px;cursor:pointer}
+nav button[aria-selected="true"]{color:#fff;border-bottom-color:var(--head-accent)}
+.btn:focus-visible,nav button:focus-visible,select:focus-visible,th button:focus-visible{outline:2px solid var(--head-accent);outline-offset:2px}
+main .wrap{padding-block:22px 48px;display:flex;flex-direction:column;gap:18px}
+.bar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
+.bar h2{font-family:var(--display);font-size:26px;font-weight:700;margin:0;letter-spacing:.02em;text-transform:uppercase}
+.ctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ctl label{font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:13px;color:var(--muted)}
+select{font-family:var(--display);font-size:17px;font-weight:600;padding:6px 30px 6px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
+.note{font-size:13px;color:var(--muted);margin:0}
+.pdfmsg{margin:0;font-size:15px;color:var(--fg);background:var(--accent-soft);border:1px solid #d5c3ea;border-radius:8px;padding:12px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.pdfmsg:empty{display:none}
+.pdfmsg.err{background:#fbeceb;border-color:#efc4bf;color:#7a2219}
+.pdfmsg a.open{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;text-decoration:none;font-family:var(--display);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:15px;padding:7px 14px;border-radius:6px}
+.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:7px 9px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--surface);position:sticky;top:0}
+th button{all:unset;cursor:pointer}
+th[aria-sort] button{color:var(--accent)}
+td.team,th.team{text-align:left}
+td.team{font-weight:500}
+tr.home td{background:var(--accent-soft)}
+tr.home td.team{font-weight:600;color:var(--accent)}
+tfoot td{font-weight:600;border-bottom:0;border-top:2px solid var(--fg)}
+.boards{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;align-items:stretch}
+.board{background:var(--surface);border:1px solid var(--line);border-radius:8px;min-width:0;display:flex;flex-direction:column}
+.board h3{margin:0;padding:10px 12px 8px;min-height:44px;box-sizing:border-box;font-family:var(--display);font-size:18px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-bottom:2px solid var(--fg);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.board h3 small{font-family:var(--body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--muted)}
+.board table td{padding:5px 10px;font-size:14px;line-height:1.3}
+.board td.pos{text-align:left;width:26px;color:var(--muted)}
+.board td.team{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0;width:100%}
+.board table{table-layout:auto}
+.board td{height:30px;box-sizing:border-box}
+.board tfoot td{border-top:1px solid var(--fg)}
+.clas td.num{text-align:right}
+.clas td.pos{text-align:center;font-weight:600;width:34px}
+.clas td.pts{font-weight:700}
+.clas .pos-dif.up{color:var(--good)} .clas .pos-dif.down{color:var(--bad)}
+.form{display:inline-flex;gap:3px}
+.form span{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:4px;font-size:11px;font-weight:700;color:#fff}
+.form .w{background:var(--good)} .form .l{background:var(--bad)}
+.clas-scroll{overflow-x:auto}
+.clasx{width:900px;margin:0 auto;background:#fff;color:#1f1f1f;font-family:Verdana,"DejaVu Sans",Geneva,sans-serif;border:1px solid var(--line);border-radius:8px;overflow:hidden;padding-bottom:22px}
+.cx-head{position:relative;background:#d1343c;color:#fff;padding:34px 44px 28px;display:flex;justify-content:space-between;align-items:center;overflow:hidden}
+.cx-head::after{content:"";position:absolute;inset:0 0 0 auto;width:320px;background:repeating-linear-gradient(-60deg,rgba(255,255,255,.13) 0 6px,transparent 6px 26px);pointer-events:none}
+.cx-ey{font-size:13px;font-weight:700;letter-spacing:.32em;display:flex;align-items:center;gap:14px}
+.cx-ey i{display:inline-block;width:26px;height:2px;background:#fff}
+.cx-t{font-size:56px;font-weight:800;line-height:1.05;margin:6px 0 4px;letter-spacing:.01em}
+.cx-s{font-size:22px;font-weight:700;letter-spacing:.12em}
+.cx-j{position:relative;z-index:1;border-left:2px solid rgba(255,255,255,.85);padding-left:28px;text-align:left;min-width:150px}
+.cx-j span{display:block;font-size:15px;font-weight:700;letter-spacing:.45em}
+.cx-j b{display:block;font-size:62px;line-height:1;font-weight:800}
+.cx-bar{height:10px;background:#222}
+.cx-tab{width:calc(100% - 88px);margin:18px 44px 6px;border-collapse:separate;border-spacing:0 7px;font-variant-numeric:tabular-nums}
+.cx-tab th{font-size:13px;font-weight:700;color:#555;text-align:center;padding:4px 6px;background:none;position:static;font-family:inherit;letter-spacing:.04em;text-transform:none;border:0}
+.cx-tab th.l{text-align:left}
+.cx-tab td{background:#f2f2f2;padding:0 8px;height:46px;font-size:19px;text-align:center;color:#2a2a2a}
+.cx-tab td:nth-child(2){border-radius:0}
+.cx-tab td.po{background:none;padding:0;width:46px}
+.cx-tab td.po span{display:grid;place-items:center;width:46px;height:46px;background:#222;color:#fff;font-weight:800;font-size:24px;border-radius:6px 0 0 6px}
+.cx-tab td.crc{width:44px;padding:0 4px}
+td.team .cr{width:18px;height:18px;object-fit:contain;vertical-align:middle;margin:-2px 6px 0 0;display:inline-block}
+.cx-tab .cr{width:34px;height:34px;object-fit:contain;display:block;margin:auto;background:#fff;border-radius:50%}
+.cx-tab td.nm{text-align:left;font-weight:700;font-size:15.5px;white-space:nowrap}
+.cx-tab td.pg{font-weight:800}
+.cx-tab td.dif{font-weight:800}
+.cx-tab td.dif.up{color:#1f7a3a} .cx-tab td.dif.dn{color:#d1343c}
+.cx-tab td:last-child{border-radius:0 6px 6px 0}
+.cx-tab .rk{display:inline-block;min-width:40px;padding:2px 8px;border-radius:5px;color:#fff;font-weight:800;font-size:14px}
+.cx-tab .rk.v{background:#1f7a3a} .cx-tab .rk.d{background:#d1343c}
+.cx-tab td{border-top:1.5px solid transparent;border-bottom:1.5px solid transparent}
+.cx-tab tr.me td{background:#fbe5e6;border-top-color:#d1343c;border-bottom-color:#d1343c}
+.cx-tab tr.me td.po span{background:#d1343c}
+.cx-tab tr.me td:last-child{border-right:1.5px solid #d1343c}
+.cx-tab tr.me td.po{border-color:transparent}
+.cx-nx{margin:16px 44px 8px;font-size:17px;font-weight:800;letter-spacing:.14em;border-bottom:2.5px solid #d1343c;padding-bottom:6px}
+.fxg{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin:12px 44px 0}
+.fx{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;background:#f2f2f2;border-radius:7px;padding:8px 12px;min-height:44px}
+.fx-t{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.fx-a{justify-content:flex-end}
+.fx .cr{width:30px;height:30px;object-fit:contain}
+.fx-m{text-align:center;display:flex;flex-direction:column;line-height:1.1}
+.fx-m b{font-size:17px} .fx-m small{font-size:11.5px;color:#777}
+.fx-home{background:#fbe5e6;border:1.5px solid #d1343c}
+.fxg .fx-home:last-child:nth-child(odd){grid-column:1 / -1;width:50%;justify-self:center}
+.empty{padding:28px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:8px}
+footer{color:var(--muted);font-size:13px}
+footer .wrap{padding-block:0 32px;display:flex;flex-direction:column;gap:6px}
+footer p{margin:0;max-width:75ch}
+@media (max-width:620px){.upd{align-items:flex-start;max-width:none;width:100%}.upd p{text-align:left}}
+@media (max-width:520px){nav button{font-size:15px;padding:9px 10px}.crest img{height:36px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.tokbox{margin-top:.6rem;display:grid;gap:.4rem;max-width:34rem;font-size:.85rem}
+.tokrow{display:flex;gap:.5rem;flex-wrap:wrap}
+.tokrow input{flex:1 1 14rem;min-width:0;font:inherit;padding:.5rem .6rem;border:1px solid currentColor;border-radius:6px;background:transparent;color:inherit}
+.tokhelp{margin:0;opacity:.85;line-height:1.4}.tokhelp a{color:inherit}
+.linkbtn{font:inherit;background:none;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer}
+</style>
+
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="crest" id="crest" hidden><img id="logo" alt="Club Baloncesto Ciudad de Valladolid"></div>
+      <div class="titles">
+        <div class="eyebrow">Segunda FEB · Temporada 2026/27 · Datos BueStats</div>
+        <h1>Estadística avanzada</h1>
+        <p class="sub" id="updated"></p>
+      </div>
+      <div class="upd">
+        <button class="btn btn-light" id="btnUpdate" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+          Actualizar datos
+        </button>
+        <p id="updMsg" aria-live="polite"></p>
+        <div id="tokBox" class="tokbox" hidden>
+          <label for="tokInput">Clave de GitHub (solo se guarda en este navegador)</label>
+          <div class="tokrow"><input id="tokInput" type="password" autocomplete="off" placeholder="github_pat_…">
+          <button class="btn btn-light" id="tokSave" type="button">Guardar y actualizar</button></div>
+          <p class="tokhelp">Cómo crearla: ver el archivo LEEME del proyecto. También puedes lanzarla a mano desde <a id="wfLink" href="#" target="_blank" rel="noopener">GitHub › Actions › Actualizar datos › Run workflow</a>. <button id="tokForget" type="button" class="linkbtn">Borrar clave de este dispositivo</button></p>
+        </div>
+      </div>
+    </div>
+    <nav role="tablist" id="tabs">
+      <button role="tab" id="tab-pa" data-view="promedios-a" aria-selected="true">Promedios Grupo A</button>
+      <button role="tab" id="tab-pb" data-view="promedios-b" aria-selected="false">Promedios Grupo B</button>
+      <button role="tab" id="tab-pac" data-view="promedios-a-copa" aria-selected="false">Promedio Grupo A + Copa</button>
+      <button role="tab" id="tab-a" data-view="grupo-a" aria-selected="false">Grupo A</button>
+      <button role="tab" id="tab-b" data-view="grupo-b" aria-selected="false">Grupo B</button>
+      <button role="tab" id="tab-lc" data-view="liga-copa-a" aria-selected="false">Liga + Copa Grupo A</button>
+      <button role="tab" id="tab-g" data-view="global" aria-selected="false">Global</button>
+      <button role="tab" id="tab-c" data-view="clasificacion" aria-selected="false">Clasificación</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="bar">
+      <h2 id="viewTitle"></h2>
+      <div class="ctl">
+        <label for="grupoSel" id="grupoLbl" hidden>Grupo</label>
+        <select id="grupoSel" hidden><option value="A">Grupo A</option><option value="B">Grupo B</option></select>
+        <label for="jornada">Hasta la jornada</label>
+        <select id="jornada"></select>
+        <button class="btn btn-line" id="btnPdf" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Exportar PDF
+        </button>
+        <button class="btn btn-line" id="btnUpdate2" type="button" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+          Actualizar
+        </button>
+      </div>
+    </div>
+    <p class="note" id="viewNote"></p>
+    <p class="pdfmsg" id="pdfMsg" aria-live="polite"></p>
+    <div id="content"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Datos: BueStats 2.0 (buestats2.com, de Marc Cortadellas), que recoge las estadísticas oficiales de la FEB. Se leen de la API pública que usa la propia web: el calendario de cada grupo (en BueStats la Segunda FEB aparece con su nombre antiguo, «Liga LEB Plata»: Oeste = Grupo A, Este = Grupo B) y, de cada partido jugado, los totales de equipo del boxscore. Todo lo demás (posesiones, ritmo, OER, DER, porcentajes) se calcula aquí sumando partido a partido hasta la jornada elegida; no se usan las cifras avanzadas que BueStats reserva a usuarios registrados. Los partidos que BueStats todavía no tiene se completan con las actas oficiales de la FEB (baloncestoenvivo.feb.es), y la nota de cada vista dice cuáles son. Las pestañas «Promedio Grupo A + Copa» y «Liga + Copa Grupo A» suman además los partidos de Copa España (fase de grupos y eliminatorias ya jugadas) de las actas de la FEB. «Actualizar datos» lanza en GitHub el proceso que vuelve a leer BueStats, las actas de la FEB y la Copa España, y publica la web con lo nuevo (tarda unos 3 minutos).</p>
+    <p>Versión web 1. FR = faltas cometidas por el rival; VA = suma de la valoración de los jugadores. Posesiones = 0,96 × (TCI + 0,44·TLI − RO + BP), calculadas para cada equipo y para su rival por separado. Ritmo = media de las posesiones propias y del rival por 40 minutos. OER = puntos anotados por 100 posesiones propias. DER = puntos recibidos por 100 posesiones del rival. % TC efectivo = PT / (2·(TCI + 0,44·TLI)) × 100. % jugada = TCA / (TCI + 0,44·TLI + BP). % asistencias = AS / TCA. % pérdidas = BP / (TCI + 0,44·TLI + BP). PPS = PT / TCI.</p>
+  </div>
+</footer>
+
+<script id="data" type="application/json">__DATA__</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const DATA = JSON.parse(document.getElementById('data').textContent);
+const HOME = 'UEMC BALONCESTO VALLADOLID';
+const nm = t => DATA.names[t] || t;
+const TEAMS = DATA.sched.teams;
+const SCHED = {};
+['A','B'].forEach(g => SCHED[g] = DATA.sched[g].map(([id,j,h,a,date]) => ({id,g,j,h:TEAMS[h],a:TEAMS[a],date})));
+const PLAYED = new Set(DATA.games.map(x => x.id));
+const GRP = k => k==='G'?['A','B']:[k];
+const teamsOf = k => [...new Set(GRP(k).flatMap(g=>SCHED[g]).flatMap(s => [s.h, s.a]))];
+
+/* ---------- cálculo ---------- */
+function blank(){return {g:0,min:0,pt:0,t2m:0,t2a:0,t3m:0,t3a:0,tlm:0,tla:0,ro:0,rd:0,as:0,br:0,bp:0,fc:0,fr:0,va:0,
+  o:{pt:0,fgm:0,fga:0,tla:0,ro:0,rd:0,bp:0}};}
+function add(T,s,o,mins){
+  T.g++;T.min+=mins;T.pt+=s.pt;T.t2m+=s.t2[0];T.t2a+=s.t2[1];T.t3m+=s.t3[0];T.t3a+=s.t3[1];T.tlm+=s.tl[0];T.tla+=s.tl[1];
+  T.ro+=s.ro;T.rd+=s.rd;T.as+=s.as;T.br+=s.br;T.bp+=s.bp;T.fc+=s.fc;T.fr+=s.fr;T.va+=s.va;
+  T.o.pt+=o.pt;T.o.fgm+=o.t2[0]+o.t3[0];T.o.fga+=o.t2[1]+o.t3[1];T.o.tla+=o.tl[1];T.o.ro+=o.ro;T.o.rd+=o.rd;T.o.bp+=o.bp;
+}
+function totals(group,upto){
+  const M={};
+  teamsOf(group).forEach(t=>M[t]=blank());
+  DATA.games.filter(x=>GRP(group).includes(x.g)&&x.j<=upto).forEach(x=>{
+    const mins=Math.max(x.hs.min,x.as.min);
+    add(M[x.h],x.hs,x.as,mins); add(M[x.a],x.as,x.hs,mins);
+  });
+  if(group==='A'&&typeof view!=='undefined'&&VIEWS[view]&&VIEWS[view].copa) copaUpTo(upto).forEach(x=>{
+    const mins=Math.max(x.hs.min,x.as.min);
+    if(M[x.h]) add(M[x.h],x.hs,x.as,mins); if(M[x.a]) add(M[x.a],x.as,x.hs,mins);
+  });
+  return Object.entries(M).filter(([,T])=>T.g>0).map(([team,T])=>{
+    const fgm=T.t2m+T.t3m, fga=T.t2a+T.t3a, o=T.o;
+    const pTeam=0.96*(fga+0.44*T.tla-T.ro+T.bp);
+    const pOpp=0.96*(o.fga+0.44*o.tla-o.ro+o.bp);
+    const poss=pTeam;
+    const den=fga+0.44*T.tla+T.bp;
+    const r={team,T,fgm,fga,poss,src:'FEB',
+      posg:pTeam/T.g, ritmo:40*0.5*(pTeam+pOpp)/(T.min/5), oer:100*T.pt/pTeam, der:100*o.pt/pOpp,
+      ts:T.pt/(2*(fga+0.44*T.tla)), jug:100*fgm/den, rdp:100*T.rd/(T.rd+o.ro), rop:100*T.ro/(T.ro+o.rd),
+      ptsg:T.pt/T.g, astp:100*T.as/fgm, tovp:100*T.bp/den, pps:T.pt/fga};
+    return r;
+  });
+}
+const f1=v=>v.toFixed(1).replace('.',','), f2=v=>v.toFixed(2).replace('.',','), f3=v=>v.toFixed(3).replace('.',','), pc=v=>(100*v).toFixed(1).replace('.',',');
+const maxJ = k => [...DATA.games,...(DATA.scores||[])].filter(x=>GRP(k).includes(x.g)).reduce((m,x)=>Math.max(m,x.j),0);
+const SCORED = Object.fromEntries((DATA.scores||[]).map(x=>[x.id,x]));
+function copaUpTo(j){
+  const ds=SCHED.A.filter(s=>s.j<=j&&PLAYED.has(s.id)&&s.date).map(s=>s.date).sort();
+  const cut=ds.length?ds[ds.length-1].slice(0,10)+' 23:59':'';
+  return (DATA.copa||[]).filter(x=>x.date<=cut);
+}
+const fmtDate = d => d ? d.slice(8,10)+'/'+d.slice(5,7) : '';
+function pendingList(k,j){
+  return GRP(k).flatMap(g=>SCHED[g]).filter(s=>s.j<=j&&!PLAYED.has(s.id));
+}
+
+/* ---------- tablas (modelo común para pantalla y PDF) ---------- */
+const PCOLS=[
+ ['pt','PT',r=>r.T.pt/r.T.g,f1],
+ ['t2m','T2A',r=>r.T.t2m/r.T.g,f1],['t2a','T2I',r=>r.T.t2a/r.T.g,f1],['t2p','% T2',r=>r.T.t2m/r.T.t2a,pc],
+ ['t3m','T3A',r=>r.T.t3m/r.T.g,f1],['t3a','T3I',r=>r.T.t3a/r.T.g,f1],['t3p','% T3',r=>r.T.t3m/r.T.t3a,pc],
+ ['tlm','T1A',r=>r.T.tlm/r.T.g,f1],['tla','T1I',r=>r.T.tla/r.T.g,f1],['tlp','% T1',r=>r.T.tlm/r.T.tla,pc],
+ ['ro','RO',r=>r.T.ro/r.T.g,f1],['rd','RD',r=>r.T.rd/r.T.g,f1],['rt','RT',r=>(r.T.ro+r.T.rd)/r.T.g,f1],
+ ['as','AS',r=>r.T.as/r.T.g,f1],['br','BR',r=>r.T.br/r.T.g,f1],['bp','BP',r=>r.T.bp/r.T.g,f1],
+ ['fc','FC',r=>r.T.fc/r.T.g,f1],['fr','FR',r=>r.T.fr/r.T.g,f1],['va','VA',r=>r.T.va/r.T.g,f1]];
+let psort={k:'pt',dir:-1};
+function promModel(g,j){
+  const rows=totals(g,j);
+  const col=PCOLS.find(c=>c[0]===psort.k);
+  if(psort.k==='team') rows.sort((a,b)=>psort.dir*a.team.localeCompare(b.team));
+  else rows.sort((a,b)=>psort.dir*(col[2](a)-col[2](b)));
+  const avg=c=>rows.reduce((s,r)=>s+c[2](r),0)/rows.length;
+  return {rows, avg};
+}
+function renderProm(g,j){
+  const {rows,avg}=promModel(g,j);
+  if(!rows.length) return `<div class="empty">Todavía no hay partidos jugados.</div>`;
+  const th=(k,l,cls='')=>`<th class="${cls}" ${psort.k===k?`aria-sort="${psort.dir<0?'descending':'ascending'}"`:''}><button data-k="${k}">${l}${psort.k===k?(psort.dir<0?' ▼':' ▲'):''}</button></th>`;
+  return `<div class="tablebox"><table>
+   <thead><tr>${th('team','Equipo','team')}${PCOLS.map(c=>th(c[0],c[1])).join('')}</tr></thead>
+   <tbody>${rows.map(r=>`<tr class="${r.team===HOME?'home':''}"><td class="team">${crest(r.team)}${r.team}</td>${PCOLS.map(c=>`<td>${c[3](c[2](r))}</td>`).join('')}</tr>`).join('')}</tbody>
+   <tfoot><tr><td class="team">PROMEDIO</td>${PCOLS.map(c=>`<td>${c[3](avg(c))}</td>`).join('')}</tr></tfoot>
+  </table></div>`;
+}
+
+const BOARDS=[
+ ['Posesiones','propias, totales y por partido',r=>r.poss,f1,r=>f1(r.posg)],
+ ['Ritmo','media propias y rival / 40 min',r=>r.ritmo,f1],
+ ['OER','pts anotados / 100 pos.',r=>r.oer,f1],
+ ['DER','pts recibidos / 100 pos. rival',r=>r.der,f1,null,1],
+ ['% TC efectivo','',r=>100*r.ts,f1],
+ ['% Jugada','',r=>r.jug,f1],
+ ['% Rebote defensivo','',r=>r.rdp,f1],
+ ['% Rebote ofensivo','',r=>r.rop,f1],
+ ['Puntos','por partido',r=>r.ptsg,f1],
+ ['% Asistencias','asist. / canastas',r=>r.astp,f1],
+ ['% Pérdidas','',r=>r.tovp,f1,null,1],
+ ['PPS','puntos por tiro de campo',r=>r.pps,f2]];
+function boardModels(g,j){
+  const rows=totals(g,j);
+  return BOARDS.map(([title,sub,fn,fmt,extra,asc])=>{
+    const rs=[...rows].sort((a,b)=>asc?fn(a)-fn(b):fn(b)-fn(a));
+    const media=rs.reduce((s,r)=>s+fn(r),0)/(rs.length||1);
+    return {title,sub,extra:!!extra,
+      body:rs.map((r,i)=>({team:r.team,home:r.team===HOME,cells:[String(i+1),nm(r.team),fmt(fn(r)),...(extra?[extra(r)]:[])]})),
+      foot:['','MEDIA',fmt(media),...(extra?[f1(rs.reduce((s,r)=>s+r.posg,0)/(rs.length||1))]:[])]};
+  });
+}
+function renderGroup(g,j){
+  if(!j) return `<div class="empty">Todavía no hay partidos jugados en este grupo.</div>`;
+  return `<div class="boards">${boardModels(g,j).map(b=>`<section class="board"><h3>${b.title}${b.sub?`<small>${b.sub}</small>`:''}</h3>
+     <table><tbody>${b.body.map(r=>`<tr class="${r.home?'home':''}"><td class="pos">${r.cells[0]}</td><td class="team">${crest(r.team)}${r.cells[1]}</td>${r.cells.slice(2).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
+     <tfoot><tr><td class="pos"></td><td class="team">MEDIA</td>${b.foot.slice(2).map(c=>`<td>${c}</td>`).join('')}</tr></tfoot></table></section>`).join('')}</div>`;
+}
+
+/* ---------- clasificación ---------- */
+function standings(g,j){
+  const S={}; teamsOf(g).forEach(t=>S[t]={team:t,pj:0,pg:0,pp:0,pf:0,pc:0,seq:[]});
+  const gs=[...DATA.games.map(x=>({id:x.id,g:x.g,j:x.j,h:x.h,a:x.a,hp:x.hs.pt,ap:x.as.pt})),...(DATA.scores||[])].filter(x=>x.g===g&&x.j<=j).sort((a,b)=>a.j-b.j||a.id-b.id);
+  gs.forEach(x=>{const hp=x.hp, ap=x.ap;
+    [[x.h,hp,ap],[x.a,ap,hp]].forEach(([t,f,c])=>{const s=S[t];s.pj++;s.pf+=f;s.pc+=c;if(f>c){s.pg++;s.seq.push('w');}else{s.pp++;s.seq.push('l');}});});
+  const rows=Object.values(S); rows.forEach(r=>{r.pt=2*r.pg+r.pp;r.dif=r.pf-r.pc;r.pct=r.pj?r.pg/r.pj:0;});
+  // Como la FEB: % de victorias, luego diferencia de puntos, luego puntos a favor
+  const out=rows.sort((a,b)=>b.pct-a.pct||b.pg-a.pg||b.dif-a.dif||b.pf-a.pf);
+  out.forEach((r,i)=>{r.pos=i+1;const last=r.seq[r.seq.length-1];let n=0;for(let q=r.seq.length-1;q>=0&&r.seq[q]===last;q--)n++;r.racha=last?n+(last==='w'?'V':'D'):'';r.rw=last==='w';r.last5=r.seq.slice(-5);});
+  return out;
+}
+const SHORT={"CLUB BALONCESTO TOLEDO BASKET":"Toledo","CACERES PATRIMONIO DE LA HUMANIDAD":"Cáceres","CB ALGECIRAS":"Algeciras","IREN BCBADAJOZ":"Badajoz","JAEN PARAISO INTERIOR FS":"Jaén","C.B. GETAFE":"Getafe","UEMC BALONCESTO VALLADOLID":"UEMC Valladolid","MELILLA CIUDAD DEL DEPORTE":"Melilla","CLÍNICA PONFERRADA SDP":"Ponferrada","SPANISH BASKETBALL ACADEMY":"SBA","CULTURAL Y DEPORTIVA LEONESA":"C. Leonesa","C.B. STARLABS MORÓN":"Morón","C.B. TRES CANTOS":"Tres Cantos","MOVISTAR ESTUDIANTES":"Estudiantes","CLASS BASQUET SANT ANTONI":"Sant Antoni","INTERMAQUINAS BENICARLO":"Benicarló","CLUB ESPORTIU BÀSQUET LLÍRIA":"Llíria","LOBE TU PROVINCIA HUESCA LA MAGIA":"Huesca","REINA PROTEÍNAS CLAVIJO":"Clavijo","TQ-CB PRAT":"Prat","VIDAL GOLOSINAS CIUDAD MOLINA BASKET":"Molina","LOGROBASKET LOGI7":"Logrobasket","LA SALUD CARTAGENA C.B.":"Cartagena","BASKET CARTAGENA":"Cartagena","BIELE ISB":"Biele ISB","PROINBENI UPB GANDIA":"Gandia","AMICS CASTELLÓ":"Castelló","C.B. ZARAGOZA":"Zaragoza","SOL GIRONÈS BISBAL BÀSQUET":"Bisbal"};
+const UPFIX={"CACERES PATRIMONIO DE LA HUMANIDAD":"CÁCERES PATRIMONIO DE LA HUMANIDAD","JAEN PARAISO INTERIOR FS":"JAÉN PARAÍSO INTERIOR FS","INTERMAQUINAS BENICARLO":"INTERMÁQUINAS BENICARLÓ","CLASS BASQUET SANT ANTONI":"CLASS BÀSQUET SANT ANTONI"};
+const upName=t=>UPFIX[t]||t;
+const crest=t=>DATA.crests&&DATA.crests[t]?`<img class="cr" src="${DATA.crests[t]}" alt="">`:'';
+const DAYS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+function fixtureWhen(s){ if(!s.date) return {t:'',d:''}; const [dd,tt]=s.date.split(' '); const dt=new Date(dd+'T12:00:00');
+  return {t:tt||'',d:DAYS[dt.getDay()]+' '+dd.slice(8,10)+'/'+dd.slice(5,7)}; }
+function renderClas(g,j){
+  const rows=standings(g,j);
+  const nextJ=j+1, fx=SCHED[g].filter(s=>s.j===nextJ);
+  const played=Object.fromEntries([...DATA.games.map(x=>[x.id,{h:x.hs.pt,a:x.as.pt}]),...(DATA.scores||[]).map(x=>[x.id,{h:x.hp,a:x.ap}])]);
+  const byTime=(a,b)=>(a.date||'9').localeCompare(b.date||'9')||(SHORT[a.h]||a.h).localeCompare(SHORT[b.h]||b.h);
+  const fxs=[...fx.filter(s=>s.h!==HOME&&s.a!==HOME).sort(byTime),...fx.filter(s=>s.h===HOME||s.a===HOME)];
+  const card=s=>{const p=played[s.id], w=fixtureWhen(s), home=s.h===HOME||s.a===HOME;
+    return `<div class="fx${home?' fx-home':''}"><span class="fx-t">${crest(s.h)}<b>${SHORT[s.h]||nm(s.h)}</b></span>
+      <span class="fx-m">${p?`<b>${p.h}-${p.a}</b><small>Final</small>`:`<b>${w.t||'—'}</b><small>${w.d}</small>`}</span>
+      <span class="fx-t fx-a"><b>${SHORT[s.a]||nm(s.a)}</b>${crest(s.a)}</span></div>`;};
+  return `<div class="clas-scroll"><div class="clasx" id="clasCard">
+   <div class="cx-head"><div class="cx-l"><div class="cx-ey">SEGUNDA FEB <i></i> TEMPORADA 2026/27</div><div class="cx-t">CLASIFICACIÓN</div><div class="cx-s">LIGA REGULAR · GRUPO ${g}</div></div>
+     <div class="cx-j"><span>JORNADA</span><b>${j}</b></div></div>
+   <div class="cx-bar"></div>
+   <table class="cx-tab"><thead><tr><th class="c">PO</th><th></th><th class="l">EQUIPO</th><th>PJ</th><th>PG</th><th>PP</th><th>PF</th><th>PC</th><th>DIF</th><th class="c">RACHA</th></tr></thead>
+   <tbody>${rows.map(r=>`<tr class="${r.team===HOME?'me':''}"><td class="po"><span>${r.pos}</span></td><td class="crc">${crest(r.team)}</td><td class="nm">${upName(r.team)}</td><td>${r.pj}</td><td class="pg">${r.pg}</td><td>${r.pp}</td><td>${r.pf}</td><td>${r.pc}</td><td class="dif ${r.dif>=0?'up':'dn'}">${r.dif>0?'+':r.dif<0?'−':''}${Math.abs(r.dif)}</td><td class="c"><span class="rk ${r.rw?'v':'d'}">${r.racha}</span></td></tr>`).join('')}</tbody></table>
+   ${fx.length?`<div class="cx-nx">PRÓXIMA JORNADA · J${nextJ}</div><div class="fxg">${fxs.map(card).join('')}</div>`:''}
+  </div></div>`;
+}
+
+/* ---------- vista ---------- */
+const VIEWS={
+  'promedios-a':{kind:'prom',g:'A',title:'Promedios · Grupo A',file:'Promedios_GrupoA'},
+  'promedios-b':{kind:'prom',g:'B',title:'Promedios · Grupo B',file:'Promedios_GrupoB'},
+  'promedios-a-copa':{kind:'prom',g:'A',copa:true,title:'Promedio Grupo A + Copa',file:'Promedios_GrupoA_Copa'},
+  'grupo-a':{kind:'boards',g:'A',title:'Grupo A',file:'Estadistica_GrupoA'},
+  'grupo-b':{kind:'boards',g:'B',title:'Grupo B',file:'Estadistica_GrupoB'},
+  'liga-copa-a':{kind:'boards',g:'A',copa:true,title:'Liga + Copa · Grupo A',file:'Estadistica_LigaCopa_GrupoA'},
+  'global':{kind:'boards',g:'G',title:'Global · Grupos A y B',file:'Estadistica_Global'},
+  'clasificacion':{kind:'clas'}};
+let view='promedios-a';
+const grupoSel=document.getElementById('grupoSel');
+const V=()=>{const v=VIEWS[view]; if(v.kind!=='clas') return v; const g=grupoSel.value;
+  return {kind:'clas',g,title:'Clasificación · Grupo '+g,file:'Clasificacion_Grupo'+g};};
+const sel=document.getElementById('jornada');
+function fillSelect(g,keep){
+  const m=maxJ(g); sel.innerHTML='';
+  for(let j=m;j>=1;j--){const op=document.createElement('option');op.value=j;op.textContent='J'+j+(j===m?' (última)':'');sel.appendChild(op);}
+  if(keep&&keep<=m) sel.value=keep;
+  sel.disabled=m<1;
+}
+function render(){
+  const v=V(), g=v.g;
+  const j=+sel.value||0;
+  document.getElementById('viewTitle').textContent = j ? v.title+' · Jornada '+j : v.title;
+  const n=DATA.games.filter(x=>GRP(g).includes(x.g)&&x.j<=j).length;
+  let note = j?`Acumulado J1–J${j}: ${n} partidos.`:'';
+  const pend=pendingList(g,j);
+  if(v.kind!=='clas'&&j) note+=' Posesiones, ritmo, OER, DER y porcentajes calculados con los boxscores de BueStats (fórmulas al pie).';
+  const sinBox=pend.filter(s=>SCORED[s.id]), pend2=pend.filter(s=>!SCORED[s.id]);
+  if(sinBox.length) note+=' Con resultado pero sin estadísticas en BueStats (cuentan para la clasificación, no para las medias): '+sinBox.map(s=>`${nm(s.h)} ${SCORED[s.id].hp}-${SCORED[s.id].ap} ${nm(s.a)} (J${s.j})`).join('; ')+'.';
+  if(pend2.length) note+=' Sin jugar o sin datos en BueStats todavía: '+pend2.map(s=>`${nm(s.h)}–${nm(s.a)} (J${s.j}${s.date?', '+fmtDate(s.date):''})`).join('; ')+'.';
+  const fe=DATA.games.filter(x=>x.src==='FEB'&&GRP(g).includes(x.g)&&x.j<=j);
+  if(fe.length) note+=` ${fe.length} partido${fe.length>1?'s':''} sacado${fe.length>1?'s':''} de las actas de la FEB porque BueStats aún no los tiene: `+fe.map(x=>`${nm(x.h)}–${nm(x.a)} (J${x.j})`).join('; ')+'.';
+  if(v.copa&&j){ const cg=copaUpTo(j); const ronda=[...new Set(cg.map(x=>x.rnd.toLowerCase()))].join(' y ');
+    note+=` Incluye ${cg.length} partidos de Copa España (${ronda||'ninguno aún'}) jugados hasta esa jornada, sacados de las actas de la FEB. De cada partido de copa solo cuentan los números del equipo del Grupo A y de su rival en ese partido.`; }
+  if(v.kind==='boards') note+=' DER y % pérdidas se ordenan de menor a mayor (menos es mejor).';
+  if(v.kind==='clas') note+=' Resultados de BueStats y de las actas FEB. Orden como la FEB: victorias y, en empate, diferencia de puntos.';
+  document.getElementById('viewNote').textContent=note;
+  document.getElementById('content').innerHTML = v.kind==='prom'?renderProm(g,j):v.kind==='clas'?renderClas(g,j):renderGroup(g,j);
+  document.getElementById('btnPdf').disabled = !j;
+}
+function setView(v,keepJ){
+  view=v;
+  document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.view===v));
+  const isC=VIEWS[v].kind==='clas';
+  ['grupoSel','grupoLbl','btnUpdate2'].forEach(id=>document.getElementById(id).hidden=!isC);
+  fillSelect(V().g,keepJ);
+  document.getElementById('pdfMsg').textContent='';
+  render();
+}
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  const v=b.dataset.view; if(location.hash!=='#'+v) location.hash=v; else setView(v,+sel.value);});
+window.addEventListener('hashchange',()=>{const v=location.hash.slice(1);if(VIEWS[v])setView(v,+sel.value);});
+grupoSel.addEventListener('change',()=>{fillSelect(V().g,+sel.value);document.getElementById('pdfMsg').textContent='';render();});
+document.getElementById('btnUpdate2').addEventListener('click',()=>document.getElementById('btnUpdate').click());
+sel.addEventListener('change',()=>{document.getElementById('pdfMsg').textContent='';render();});
+document.getElementById('content').addEventListener('click',e=>{const b=e.target.closest('th button');if(!b)return;
+  const k=b.dataset.k; psort = psort.k===k?{k,dir:-psort.dir}:{k,dir:k==='team'?1:-1}; render();});
+
+if(DATA.logo){document.getElementById('logo').src=DATA.logo;document.getElementById('crest').hidden=false;}
+document.getElementById('updated').textContent=DATA.updated;
+const start=location.hash.slice(1);
+setView(VIEWS[start]?start:'promedios-a');
+
+/* ---------- PDF ---------- */
+let logoPng=null;
+function getLogoPng(){
+  if(!DATA.logo) return Promise.resolve(null);
+  if(logoPng) return Promise.resolve(logoPng);
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{const c=document.createElement('canvas');const s=Math.min(1,600/Math.max(img.naturalWidth,img.naturalHeight));
+      c.width=Math.max(1,Math.round(img.naturalWidth*s));c.height=Math.max(1,Math.round(img.naturalHeight*s));
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);logoPng={url:c.toDataURL('image/png'),ratio:c.width/c.height};res(logoPng);};
+    img.onerror=()=>res(null);
+    img.src=DATA.logo;
+  });
+}
+let CRPNG=null;
+async function getCrestPngs(){
+  if(CRPNG) return CRPNG; CRPNG={};
+  const ent=Object.entries(DATA.crests||{});
+  await Promise.all(ent.map(([t,src],i)=>new Promise(res=>{const im=new Image();im.onload=()=>{try{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');const r=Math.min(64/im.width,64/im.height),w=im.width*r,h=im.height*r;x.drawImage(im,(64-w)/2,(64-h)/2,w,h);CRPNG[t]={url:c.toDataURL('image/png'),alias:'cr'+i};}catch(e){}res();};im.onerror=()=>res();im.src=src;})));
+  return CRPNG;
+}
+function crestCell(doc,d,team,col){
+  if(d.section!=='body'||d.column.index!==col) return;
+  const c=CRPNG&&CRPNG[team]; if(!c) return;
+  const s=Math.min(d.cell.height-0.5,4.2);
+  try{doc.addImage(c.url,'PNG',d.cell.x+1,d.cell.y+(d.cell.height-s)/2,s,s,c.alias);}catch(e){}
+}
+const PURPLE=[91,42,134], SOFT=[238,230,246], INK=[27,26,36];
+function homeRowStyle(data,isHome){ if(isHome){data.cell.styles.fillColor=SOFT;data.cell.styles.textColor=PURPLE;data.cell.styles.fontStyle='bold';} }
+const LAYOUT={A:{cols:4,per:12,fs:6.4,pad:0.4},B:{cols:4,per:12,fs:6.4,pad:0.4},G:{cols:3,per:6,fs:5.4,pad:0.3}};
+async function buildPdf(){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  const W=297, M=8, LH=14;
+  const logo=await getLogoPng();
+  try{await getCrestPngs();}catch(e){}
+  const v=V(), j=+sel.value;
+  const drawLogo=()=>{
+    let x=M;
+    if(logo){ doc.addImage(logo.url,'PNG',M,M,LH*logo.ratio,LH); x=M+LH*logo.ratio+4; }
+    doc.setTextColor(...INK); doc.setFont('helvetica','bold'); doc.setFontSize(15);
+    doc.text('JORNADA '+j, x, M+6.5);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(106,104,120);
+    doc.text(v.title+' · acumulado J1–J'+j, x, M+12);
+  };
+  if(v.kind!=='clas') drawLogo();
+  const top=M+LH+3;
+  if(v.kind==='clas'){
+    const el=document.getElementById('clasCard');
+    const cv=await html2canvas(el,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+    const pdoc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const pw=210, ph=297, mm=6; let w=pw-2*mm, h=w*cv.height/cv.width;
+    if(h>ph-2*mm){h=ph-2*mm;w=h*cv.width/cv.height;}
+    pdoc.addImage(cv.toDataURL('image/jpeg',0.92),'JPEG',(pw-w)/2,mm,w,h);
+    return pdoc;
+  } else if(v.kind==='prom'){
+    const {rows,avg}=promModel(v.g,j);
+    doc.autoTable({
+      startY:top, margin:{left:M,right:M},
+      head:[['Equipo',...PCOLS.map(c=>c[1])]],
+      body:rows.map(r=>[r.team,...PCOLS.map(c=>c[3](c[2](r)))]),
+      foot:[['PROMEDIO',...PCOLS.map(c=>c[3](avg(c)))]],
+      styles:{font:'helvetica',fontSize:7.6,cellPadding:1.4,halign:'right',textColor:INK,lineColor:[221,219,230],lineWidth:0.1},
+      headStyles:{fillColor:[36,27,51],textColor:255,fontStyle:'bold'},
+      footStyles:{fillColor:[230,228,236],textColor:INK,fontStyle:'bold'},
+      columnStyles:{0:{halign:'left',cellWidth:62}},
+      didParseCell:d=>{ if(d.column.index===0) d.cell.styles.halign='left';
+        if(d.section==='body'){ homeRowStyle(d,rows[d.row.index].team===HOME); if(d.column.index===0&&CRPNG&&CRPNG[rows[d.row.index].team]) d.cell.styles.cellPadding={top:1.4,bottom:1.4,right:1.4,left:6}; } },
+      didDrawCell:d=>crestCell(doc,d,d.section==='body'?rows[d.row.index].team:null,0)
+    });
+  } else {
+    const L=LAYOUT[v.g];
+    const boards=boardModels(v.g,j);
+    const gap=4, w=(W-2*M-(L.cols-1)*gap)/L.cols;
+    let y=top, rowMax=y;
+    boards.forEach((b,i)=>{
+      const k=i%L.per;
+      if(i>0&&k===0){doc.addPage();drawLogo();y=top;rowMax=y;}
+      const c=k%L.cols; if(c===0&&k>0){y=rowMax+gap;}
+      const x=M+c*(w+gap);
+      const head=[['#',b.title.toUpperCase(),...(b.extra?['TOTAL','/PART']:[''])]];
+      doc.autoTable({
+        startY:y, margin:{left:x,top:M,bottom:4}, tableWidth:w, pageBreak:'avoid', rowPageBreak:'avoid',
+        head, body:b.body.map(r=>r.cells), foot:[b.foot],
+        styles:{font:'helvetica',fontSize:L.fs,cellPadding:{top:L.pad,bottom:L.pad,left:1,right:1},halign:'right',textColor:INK,lineColor:[221,219,230],lineWidth:0.1,overflow:'ellipsize'},
+        headStyles:{fillColor:[36,27,51],textColor:255,fontStyle:'bold'},
+        footStyles:{fillColor:[230,228,236],textColor:INK,fontStyle:'bold'},
+        columnStyles:{0:{halign:'left',cellWidth:5},1:{halign:'left'}},
+        didParseCell:d=>{ if(d.column.index===1) d.cell.styles.halign='left';
+          if(d.section==='body'){ homeRowStyle(d,b.body[d.row.index].home); if(d.column.index===1&&CRPNG&&CRPNG[b.body[d.row.index].team]) d.cell.styles.cellPadding={top:L.pad,bottom:L.pad,right:1,left:1.6+L.fs*0.45}; } },
+        didDrawCell:d=>crestCell(doc,d,d.section==='body'?b.body[d.row.index].team:null,1)
+      });
+      rowMax=Math.max(rowMax,doc.lastAutoTable.finalY);
+    });
+  }
+  return doc;
+}
+const errText=e=>{const c=e&&e.code;return (c?'['+c+'] ':'')+((e&&e.message)||String(e||''));};
+const useCap=async n=>{try{return window.claude&&window.claude.use?await window.claude.use(n):null;}catch(e){return null;}};
+const withTimeout=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r('__timeout'),ms))]);
+function pdfStatus(text,isErr,link){
+  const m=document.getElementById('pdfMsg');m.textContent='';m.classList.toggle('err',!!isErr);
+  if(text) m.append(text);
+  if(link){const a=document.createElement('a');a.className='open';a.href=link.url;a.target='_blank';a.rel='noopener';a.textContent=link.label||'Abrir PDF';m.append(a);}
+  m.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+async function offerLink(bytes,name,why){
+  const assets=await useCap('assets');
+  if(!assets) throw {code:'novista',message:'Esta vista no permite guardar archivos (suele pasar en la vista previa dentro de la conversación). Abre la página completa y vuelve a pulsar Exportar PDF:'};
+  pdfStatus('Preparando el enlace al PDF…');
+  const up=await assets.upload(new File([bytes],name,{type:'application/pdf'}));
+  pdfStatus(name+' listo. Ábrelo y guárdalo o imprímelo desde ahí:',false,up);
+}
+document.getElementById('btnPdf').addEventListener('click',async()=>{
+  const btn=document.getElementById('btnPdf');
+  const label=btn.lastChild.textContent;
+  btn.disabled=true;btn.lastChild.textContent=' Generando…';
+  pdfStatus('Generando el PDF…');
+  try{
+    if(!window.jspdf||!window.jspdf.jsPDF||!window.jspdf.jsPDF.API.autoTable) throw {message:'no se ha cargado el generador de PDF; recarga la página'};
+    const j=+sel.value, name=V().file+`_J1-J${j}.pdf`;
+    const bytes=(await buildPdf()).output('arraybuffer');
+    if(!window.claude||!window.claude.use){
+      // Página abierta como archivo normal en el navegador: descarga directa
+      const url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));
+      const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),60000);
+      pdfStatus('PDF descargado: '+name);return;
+    }
+    const dl=await useCap('downloads');
+    let why='descarga directa no disponible';
+    if(dl){
+      pdfStatus('Confirma la descarga en el aviso de Claude…');
+      try{
+        const r=await withTimeout(dl.save({filename:name,data:bytes.slice(0)}),7000);
+        if(r!=='__timeout'){pdfStatus('PDF descargado: '+name);return;}
+        why='la descarga no se confirmó';
+      }catch(e){
+        if(e&&e.code==='declined'){pdfStatus('Descarga cancelada.');return;}
+        why=errText(e);
+      }
+    }
+    await offerLink(bytes,name,why);
+  }catch(e){
+    if(e&&e.code==='novista'){pdfStatus(e.message,true,{url:'https://claude.ai/artifact/79scpd7rdA3TNkuqvrsRBE',label:'Abrir página completa'});}
+    else pdfStatus('No se ha podido exportar el PDF: '+errText(e),true);
+  }finally{btn.disabled=false;btn.lastChild.textContent=label;}
+});
+window.addEventListener('error',e=>{try{pdfStatus('Error en la página: '+(e.message||e),true);}catch(_){}});
+
+/* ---------- Actualizar: lanza el proceso de actualización en GitHub ---------- */
+const REPO='__REPO__', WORKFLOW='actualizar.yml', TOKKEY='cbv_token_github';
+function setUpd(t,err){const p=document.getElementById('updMsg');p.textContent=t;p.classList.toggle('err',!!err);}
+const getTok=()=>{try{return localStorage.getItem(TOKKEY)||'';}catch(e){return '';}};
+const setTok=v=>{try{v?localStorage.setItem(TOKKEY,v):localStorage.removeItem(TOKKEY);}catch(e){}};
+const wfUrl=()=>REPO?`https://github.com/${REPO}/actions/workflows/${WORKFLOW}`:'';
+function showTokBox(show){document.getElementById('tokBox').hidden=!show;const l=document.getElementById('wfLink');if(l&&REPO)l.href=wfUrl();}
+async function esperarDatosNuevos(antes){
+  for(let i=0;i<20;i++){
+    await new Promise(r=>setTimeout(r,20000));
+    try{const d=await fetch('data.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json());
+      if(d.updated&&d.updated!==antes){setUpd('Datos nuevos publicados. Recargando…');setTimeout(()=>location.reload(),1500);return;}}catch(e){}
+    setUpd(`Actualizando en GitHub… (${Math.round((i+1)/3)} min). La página se recargará sola al terminar.`);
+  }
+  setUpd('La actualización está tardando más de lo normal. Mira el estado en GitHub o recarga la página dentro de un rato.',true);
+}
+async function lanzar(){
+  const btn=document.getElementById('btnUpdate');
+  if(!REPO){setUpd('Esta copia no está publicada en GitHub, así que no puede actualizarse sola. Abre la web publicada.',true);return;}
+  const tok=getTok();
+  if(!tok){showTokBox(true);setUpd('La primera vez en este dispositivo hace falta tu clave de GitHub (ver abajo).');return;}
+  btn.disabled=true; setUpd('Lanzando la actualización en GitHub…');
+  try{
+    const r=await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${WORKFLOW}/dispatches`,{method:'POST',
+      headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+tok,'X-GitHub-Api-Version':'2022-11-28'},
+      body:JSON.stringify({ref:'main'})});
+    if(r.status===204){showTokBox(false);setUpd('Actualización lanzada. Tarda unos 3 minutos; la página se recargará sola.');await esperarDatosNuevos(DATA.updated);}
+    else if(r.status===401||r.status===403||r.status===404){setTok('');showTokBox(true);setUpd('GitHub no ha aceptado la clave (caducada o sin permiso de «Actions»). Pega una nueva abajo.',true);}
+    else setUpd('GitHub respondió con un error ('+r.status+'). Inténtalo de nuevo o lánzalo desde GitHub.',true);
+  }catch(e){setUpd('No se pudo contactar con GitHub. Revisa la conexión e inténtalo de nuevo.',true);}
+  btn.disabled=false;
+}
+document.getElementById('btnUpdate').addEventListener('click',lanzar);
+document.getElementById('tokSave').addEventListener('click',()=>{const v=document.getElementById('tokInput').value.trim();
+  if(!v){setUpd('Pega primero la clave.',true);return;} setTok(v); document.getElementById('tokInput').value=''; lanzar();});
+document.getElementById('tokForget').addEventListener('click',()=>{setTok('');setUpd('Clave borrada de este dispositivo.');});
+</script>
+
+
+
+</body></html>
